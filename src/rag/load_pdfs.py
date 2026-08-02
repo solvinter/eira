@@ -1,44 +1,62 @@
 from pathlib import Path
+import json
 import pymupdf
 
 
-def find_pdfs(folder):
-    return list(folder.glob("*.pdf"))
+def find_pdfs(folder: Path):
+    return sorted(folder.glob("*.pdf"))
 
 
-def load_pdf(pdf_path):
+def load_pdf(pdf_path: Path):
     document = pymupdf.open(pdf_path)
+    pages = []
 
-    text = ""
+    for page_number, page in enumerate(document, start=1):
+        text = page.get_text().strip()
+        if text:
+            pages.append((page_number, text))
 
-    for page in document:
-        text += page.get_text()
+    return pages
 
-    return text
 
-def chunk_text(text, chunk_size=1000):
+def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 150):
     chunks = []
+    start = 0
 
-    for i in range(0, len(text), chunk_size):
-        chunks.append(text[i:i + chunk_size])
+    while start < len(text):
+        end = start + chunk_size
+        chunk = text[start:end].strip()
+
+        if chunk:
+            chunks.append(chunk)
+
+        start += chunk_size - overlap
 
     return chunks
 
 
 documents = Path("documents/nacca/mathematics")
+output_file = Path("data/chunks.jsonl")
+output_file.parent.mkdir(parents=True, exist_ok=True)
 
-pdfs = find_pdfs(documents)
+total_chunks = 0
 
-for pdf in pdfs:
-    print(f"\nLoading {pdf.name}")
+with output_file.open("w", encoding="utf-8") as output:
+    for pdf in find_pdfs(documents):
+        print(f"Loading {pdf.name}")
 
-    text = load_pdf(pdf)
+        for page_number, page_text in load_pdf(pdf):
+            chunks = chunk_text(page_text)
 
-    chunks = chunk_text(text)
+            for chunk_index, chunk in enumerate(chunks):
+                record = {
+                    "source": str(pdf),
+                    "page": page_number,
+                    "chunk_index": chunk_index,
+                    "text": chunk,
+                }
 
-    print(f"{len(chunks)} chunks created")
+                output.write(json.dumps(record, ensure_ascii=False) + "\n")
+                total_chunks += 1
 
-    if chunks:
-        print(chunks[0][:500])
-
-    print("-" * 80)
+print(f"Saved {total_chunks} chunks to {output_file}")
