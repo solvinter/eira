@@ -1,0 +1,5 @@
+ollama
+qdrant-client
+pymupdf
+groq
+python-dotenv

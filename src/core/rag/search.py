@@ -1,7 +1,7 @@
 from ollama import embed
 from qdrant_client import QdrantClient
 
-client = QdrantClient("127.0.0.1", port=6333)
+client = QdrantClient(path="data/qdrant")
 
 
 def search(query):

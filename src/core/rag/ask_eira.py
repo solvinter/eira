@@ -1,12 +1,20 @@
 from qdrant_client import QdrantClient
-from ollama import embed, chat
+from ollama import embed
+from groq import Groq
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
-COLLECTION = "eira_school_material"
+COLLECTION = "nacca"
 EMBEDDING_MODEL = "nomic-embed-text"
-LANGUAGE_MODEL = "gemma3:4b"
+LANGUAGE_MODEL = "llama-3.3-70b-versatile"
 QDRANT_PATH = "data/qdrant"
 NUMBER_OF_CHUNKS = 5
+
+client_groq = Groq(
+    api_key=os.environ["GROQ_API_KEY"]
+)
 
 
 def create_embedding(text: str):
@@ -73,22 +81,33 @@ QUESTION
 {question}
 """.strip()
 
-    response = chat(
+    response = client_groq.chat.completions.create(
+
         model=LANGUAGE_MODEL,
+
         messages=[
+
             {
+
                 "role": "system",
+
                 "content": system_prompt,
+
             },
+
             {
+
                 "role": "user",
+
                 "content": user_prompt,
+
             },
+
         ],
+
     )
 
-    return response["message"]["content"]
-
+    return response.choices[0].message.content
 
 def main():
     question = input("Question: ").strip()
@@ -116,7 +135,7 @@ def main():
                 f"{payload.get('source')} page {payload.get('page')}"
             )
 
-        print("\nGemma is answering...\n")
+        print("\nEira is thinking...\n")
 
         answer = answer_question(question, context)
         print(answer)

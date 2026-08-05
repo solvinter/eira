@@ -6,7 +6,7 @@ from qdrant_client.models import PointStruct
 
 EMBEDDINGS_FILE = Path("data/embeddings.jsonl")
 
-client = QdrantClient("127.0.0.1", port=6333)
+client = QdrantClient(path="data/qdrant")
 
 
 with open(EMBEDDINGS_FILE, "r", encoding="utf-8") as f:
