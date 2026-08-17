@@ -40,7 +40,23 @@ The purpose of the device is to make eira continuously accessible to the student
 
 One teacher participates alongside the five students.
 
+During the pilot, the teacher receives a computer and full access to a frontier model. This is intentionally less restricted than the student environment. The teacher should be able to use the model as a general professional tool for lesson and homework planning, preparation, reflection and following the students' development throughout the pilot.
+
 The teacher provides an important human reference point for the pilot and helps establish the actual educational context in which eira is being used. Teacher observations should inform the interpretation of student interactions and any changes made during the pilot.
+
+The teacher environment can therefore be understood as:
+
+```text
+teacher
+  ↓
+computer
+  ↓
+full frontier-model access
+  ↓
+planning / preparation / follow-up
+  ↓
+student development and pilot observations
+```
 
 ## eira role
 
@@ -54,7 +70,7 @@ The pilot initially uses a frontier-model API directly.
 
 This is a deliberate choice. The first objective is to establish the quality and behaviour of the best practical reference system without prematurely optimising around cheaper models.
 
-The initial path is therefore:
+The initial student path is therefore:
 
 ```text
 student question
@@ -67,6 +83,8 @@ frontier-model API
       ↓
 response
 ```
+
+The teacher has full frontier-model access through the teacher computer for planning and follow-up.
 
 The pilot should document actual model usage, latency, cost and answer quality.
 
@@ -100,4 +118,4 @@ This period should be long enough to observe repeated real-world use rather than
 
 The first pilot should optimise for observability and learning rather than architectural completeness.
 
-Start with a small group, one subject, dedicated devices and a strong reference model. Add technical complexity only when the pilot produces evidence that it is needed.
+Start with a small group, one subject, dedicated student devices, a teacher workstation and a strong reference model. Add technical complexity only when the pilot produces evidence that it is needed.
